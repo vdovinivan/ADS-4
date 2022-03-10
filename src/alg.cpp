@@ -33,13 +33,13 @@ void quickSort(int* arr, int len) {
     int c = arr[len / 2];
     do {
         while (arr[a] < c)
-            l++;
+            a++;
         while (arr[b] > c)
             b--;
         if (a <= b) {
             int t = arr[b];
             arr[a] = arr[b];
-            arr[r] = temp;
+            arr[b] = t;
             a++;
             b--;
         }
@@ -47,11 +47,12 @@ void quickSort(int* arr, int len) {
     if (b > 0)
         quickSort(arr, b + 1);
     if (a < len)
-        quickSort(&arr[a], len - l);
+        quickSort(&arr[a], len - a);
 }
+
 int binSearch(int* arr, int a, int b, int value) {
     if (b >= a) {
-        int c = a + (b - l) / 2;
+        int c = a + (b - a) / 2;
         if (arr[c] == value)
             return binSearch(arr, a, c - 1, value)
             + binSearch(arr, c + 1, b, value) + 1;
@@ -65,7 +66,7 @@ int binSearch(int* arr, int a, int b, int value) {
 int countPairs3(int *arr, int len, int value) {
     int r = 0;
     for (int j = 0; j < len - 1; j++)
-        for (int j = i + 1; j < len; j++)
+        for (int j = j + 1; j < len; j++)
             if (arr[i] + arr[j] == value) {
                 r++;
             }
