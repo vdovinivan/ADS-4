@@ -1,6 +1,4 @@
 // Copyright 2021 NNTU-CS
-#include <time.h>
-using namespace std;
 
 int countPairs1(int* arr, int len, int value) {
     int count = 0;
@@ -19,10 +17,7 @@ int countPairs2(int* arr, int len, int value) {
         maxPart = (left + right) / 2;
         if (arr[maxPart] > value) {
             right = maxPart;
-        }
-        else {
-            left = maxPart + 1;
-        }
+        } else { left = maxPart + 1; }
     }
     int hVal = value / 2;
 
@@ -46,10 +41,7 @@ int binS(int* arr, int size, int value) {
         int m = (l + r) / 2;
         if (arr[m] < value) {
             r = m;
-        }
-        else {
-            l = m;
-        }
+        } else { l = m; }
     }
     int rIn = l;
     int lIn = l - 1;
