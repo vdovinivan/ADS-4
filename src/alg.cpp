@@ -1,74 +1,88 @@
 // Copyright 2021 NNTU-CS
-int countPairs1(int *arr, int len, int value) {
-  int m = 0;
-    for (int j = 0; j < len; j++) {
-      if (arr[j] <= value) {
-        for (int jj = 0; jj < len; jj++) {
-          if (arr[j] + arr[jj] < value) {
-            continue;
-          } else if (arr[j] + arr[jj] == value) {
-            m++;
-          } else {
-            break;
-          }
-        }
-      }
-    }
-    return m;
-  }
+#include <stdio.h>
+#include <iostream>
+#include <time.h>
+using namespace std;
 
-int countPairs2(int *arr, int len, int value) {
-    int r = 0;
-    for (int j = 0; j < len - 1; j++)
-        for (int j = j + 1; j < len; j++)
-            if (arr[j] + arr[j] == value) {
-                r++;
+int countPairs1(int* arr, int len, int value) {
+    int count = 0;
+    for (int i = 0; i < len - 1; i++) {
+        for (int j = i + 1; j < len; j++) {
+            if (arr[i] + arr[j] == value) count++;
+        }
+    }
+    return count;
+}
+
+
+int countPairs2(int* arr, int len, int value) {
+    int count = 0, left = 0, right = len, maxPart = 0, i, j;
+    while (left < right) {
+        maxPart = (left + right) / 2;
+        if (arr[maxPart] > value) {
+            right = maxPart;
+        }
+        else {
+            left = maxPart + 1;
+        }
+    }
+    int hVal = value / 2;
+
+    for (i = 0; arr[i] < hVal; i++) {
+        int secP = value - arr[i];
+        for (j = maxPart; arr[j] >= secP; j--) {
+            if (arr[i] + arr[j] == value) {
+                count++;
             }
-    return r;
-}
-
-void quickSort(int* arr, int len) {
-    int a = 0;
-    int b = len - 1;
-    int c = arr[len / 2];
-    do {
-        while (arr[a] < c)
-            a++;
-        while (arr[b] > c)
-            b--;
-        if (a <= b) {
-            int t = arr[b];
-            arr[a] = arr[b];
-            arr[b] = t;
-            a++;
-            b--;
         }
-    } while (a <= b);
-    if (b > 0)
-        quickSort(arr, b + 1);
-    if (a < len)
-        quickSort(&arr[a], len - a);
+    }
+    for (j = 1; arr[i + 1] == hVal; i++, j++) {
+        count += j;
+    }
+    return count;
 }
 
-int binSearch(int* arr, int a, int b, int value) {
-    if (b >= a) {
-        int c = a + (b - a) / 2;
-        if (arr[c] == value)
-            return binSearch(arr, a, c - 1, value)
-            + binSearch(arr, c + 1, b, value) + 1;
-        if (arr[c] > value)
-            return binSearch(arr, a, c - 1, value);
-        return binSearch(arr, c + 1, b, value);
+int binS(int* arr, int size, int value) {
+    int res = 0, r = -1, l = size;
+    while (r < l - 1) {
+        int m = (l + r) / 2;
+        if (arr[m] < value) {
+            r = m;
+        }
+        else {
+            l = m;
+        }
     }
-    return 0;
+    int rIn = l;
+    int lIn = l - 1;
+    while (rIn < size && arr[rIn] == value) {
+        rIn++;
+        res++;
+    }
+    while (lIn > 0 && arr[lIn] == value) {
+        lIn--;
+        res++;
+    }
+    return res;
 }
 
-int countPairs3(int *arr, int len, int value) {
-    quickSort(arr, len);
-    int r = 0;
-    for (int j = 0; j < len; j++) {
-        r += binSearch(&arr[j+1], 0, len-j, value - arr[j]);
+int countPairs3(int* arr, int len, int value) {
+    int kol = 0, i, j, count = 0;
+    for (i = 0; i < len; i++) {
+        if (arr[i] >= value / 2) {
+            int cCtr = binS(arr, len, value - arr[i]);
+            int cCtr2 = binS(arr, len, arr[i]);
+            for (j = cCtr - 1; j > 0; j--) {
+                if (value % 2 != 0) {
+                    kol += cCtr * cCtr2;
+                    break;
+                }
+                count += j;
+            }
+            break;
+        }
+        kol = binS(arr, len, value - arr[i]);
+        count += kol;
     }
-
-    return r;
+    return count;
 }
